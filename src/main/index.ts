@@ -1,4 +1,4 @@
-import { app, shell, BrowserWindow, ipcMain, nativeImage } from 'electron'
+import { app, shell, BrowserWindow, ipcMain, nativeImage, screen } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
@@ -36,18 +36,34 @@ ipcMain.handle('load-next-image', async (): Promise<string> => {
 
 function createWindow(): void {
   // Create the browser window.
+  // const mainWindow = new BrowserWindow({
+  //   width: 900,
+  //   height: 670,
+  //   show: false,
+  //   // fullscreen: true,
+  //   autoHideMenuBar: true,
+  //   ...(process.platform === 'linux' ? { icon } : {}),
+  //   webPreferences: {
+  //     preload: join(__dirname, '../preload/index.js'),
+  //     sandbox: false
+  //   }
+  // })
+  const displays = screen.getAllDisplays();
+
+  const { x, y, width, height } = displays[0].bounds;
   const mainWindow = new BrowserWindow({
-    width: 900,
-    height: 670,
-    show: false,
-    // fullscreen: true,
+    x,
+    y,
     autoHideMenuBar: true,
-    ...(process.platform === 'linux' ? { icon } : {}),
+    fullscreen: true,
+    width,
+    height,
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
+      contextIsolation: true,
       sandbox: false
     }
-  })
+  });
 
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
