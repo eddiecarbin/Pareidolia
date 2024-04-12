@@ -1,0 +1,37 @@
+@import './base.css';
+
+
+/* Make the body and html elements take up the full height of the screen */
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden; /* Prevent scrollbars */
+}
+
+#myImage {
+  -webkit-user-select: none; /* Chrome, Safari, and Opera */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none; /* Non-prefixed version, currently supported by Chrome, Edge, Opera, and Firefox */
+  position: fixed; /* Fixed position makes it stay in place even on scroll */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* This makes the image cover the available space without distorting its aspect ratio */
+  pointer-events: none; /* Make image non-interactive */
+  z-index: 1; /* Ensure it's below the canvas */
+}
+
+#myCanvas {
+  position: fixed; /* Similar to the image, but ensures it's always on top */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: all; /* Make canvas interactive */
+  z-index: 20; /* Higher z-index than the image, so it's on top */
+  background-color: transparent;
+}
