@@ -18,11 +18,9 @@ export enum DrawingEnum {
 
 export class DrawingController extends EventTarget {
     private app: PIXI.Application;
-    private isDrawing: boolean = false;
-    private currentPath: PIXI.Graphics;
-    private lastPosition: { x: number; y: number } | null = null; // Store the last position
     private touchPaths: Map<number, TouchPathInfo> = new Map();
     private colors: number[] = [0xFF0000, 0xFFA500, 0x0000FF, 0xFFFF00, 0xFF00FF, 0x00FFFF];
+    private drawTolerance = 10;
 
     constructor() {
         super();
@@ -86,8 +84,9 @@ export class DrawingController extends EventTarget {
 
             if (!touchInfo) return;
 
-
             const currentPosition = { x: event.global.x, y: event.global.y };
+
+            if (this.distanceBetween(touchInfo.lastPosition, currentPosition) < this.drawTolerance) return;
 
             touchInfo.graphics.moveTo(touchInfo.lastPosition.x, touchInfo.lastPosition.y);
             touchInfo.graphics.lineTo(currentPosition.x, currentPosition.y);
@@ -98,6 +97,12 @@ export class DrawingController extends EventTarget {
 
             touchInfo.lastPosition = currentPosition; // Update the last position for continuity
         }
+    }
+
+    private distanceBetween(point1, point2) {
+        const dx = point2.x - point1.x;
+        const dy = point2.y - point1.y;
+        return Math.sqrt(dx * dx + dy * dy);
     }
 
     private stopDrawing(event: FederatedPointerEvent): void {
