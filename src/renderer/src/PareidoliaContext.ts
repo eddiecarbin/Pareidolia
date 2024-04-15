@@ -48,6 +48,16 @@ export class PareidoliaContext {
                 window.close();
                 return;
             }
+            else if (event.key === 'c' || event.key === 'C') {
+                this.drawingController.clearCanvas();
+                this.countDownTimer.reset();
+            }
+            // on arrow left or right key
+            else if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
+                this.drawingController.clearCanvas();
+                this.imageMediator.loadNextImage();
+                this.countDownTimer.reset();
+            }
         });
     }
 }
