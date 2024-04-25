@@ -52,6 +52,9 @@ export class PareidoliaContext {
                 this.drawingController.clearCanvas();
                 this.countDownTimer.reset();
             }
+            else if (event.key === 'm' || event.key === 'M') {
+                this.drawingController.setMultipleColors(!this.drawingController.getMultipleColors());
+            }
             // on arrow left or right key
             else if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
                 this.drawingController.clearCanvas();

@@ -22,6 +22,8 @@ export class DrawingController extends EventTarget {
     private colors: number[] = [0xFF0000, 0xFFA500, 0x0000FF, 0xFFFF00, 0xFF00FF, 0x00FFFF];
     private drawTolerance = 10;
 
+    private multipleColors = true;
+
     constructor() {
         super();
     }
@@ -54,11 +56,18 @@ export class DrawingController extends EventTarget {
         if (event.pointerType === 'touch') {
             const identifier = event.pointerId;
 
-            const randomColor = this.colors[Math.floor(Math.random() * this.colors.length)];
+
+            // if multiplecolors == true
+            let color = this.colors[0];
+            if (this.multipleColors == true) {
+                color = this.colors[Math.floor(Math.random() * this.colors.length)];
+            }
+
+            // const randomColor = this.colors[Math.floor(Math.random() * this.colors.length)];
 
             const graphics = new PIXI.Graphics();
             this.app.stage.addChild(graphics);
-            graphics.lineStyle(5, randomColor, 1);
+            graphics.lineStyle(5, color, 1);
             // graphics.interactive = false;
             graphics.eventMode = 'none';
 
@@ -74,6 +83,14 @@ export class DrawingController extends EventTarget {
             this.touchPaths.set(identifier, { graphics, lastPosition: startPosition });
             this.dispatchEvent(new CustomEvent(DrawingEnum.DRAWING_STARTED, { detail: { identifier } }));
         }
+    }
+
+    public setMultipleColors(multipleColors: boolean): void {
+        this.multipleColors = multipleColors;
+    }
+
+    public getMultipleColors(): boolean {
+        return this.multipleColors;
     }
 
     private drawLine(event: FederatedPointerEvent): void {
