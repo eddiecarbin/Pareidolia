@@ -2,7 +2,6 @@ export class CountDownTimer extends EventTarget {
     private remainingTime: number;
     private lastUpdateTime: number;
     private timerComplete: boolean;
-    private timerID: number | undefined; // To keep track of the interval ID
     private initialTime: number; // Store the initial time for resets
 
     constructor(initialTime: number = 0) {
@@ -14,19 +13,14 @@ export class CountDownTimer extends EventTarget {
     }
 
     public start(): void {
-        if (this.timerID !== undefined) {
-            clearInterval(this.timerID); // Clear existing timer if running
-        }
         this.timerComplete = false;
         this.lastUpdateTime = Date.now(); // Reset the last update time
         // this.timerID = window.setInterval(() => this.update(), 1000); // Update every second
     }
 
     public stop(): void {
-        if (this.timerID !== undefined) {
-            clearInterval(this.timerID);
-            this.timerID = undefined;
-        }
+        this.timerComplete = true;
+        this.remainingTime = this.initialTime; 
     }
 
     public reset(): void {
@@ -51,6 +45,11 @@ export class CountDownTimer extends EventTarget {
 
     // Modify the update method to call reset() when countdown completes
     public update(): void {
+
+        if (this.timerComplete == true) {
+            return;
+        }
+
         const now = Date.now();
         const deltaTime = (now - this.lastUpdateTime) / 1000;
 
@@ -64,7 +63,7 @@ export class CountDownTimer extends EventTarget {
                 if (!this.timerComplete) {
                     this.timerComplete = true;
                     this.dispatchEvent(new Event('countdownComplete'));
-                    this.reset(); // Automatically reset and restart the timer
+                    // this.reset(); // Automatically reset and restart the timer
                 }
                 return;
             }

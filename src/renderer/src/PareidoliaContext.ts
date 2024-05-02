@@ -10,6 +10,9 @@ export class PareidoliaContext {
     private imageMediator: ImageMediator;
 
     protected countDownTimer: CountDownTimer;
+    private inUseCountDownTimer: CountDownTimer;
+    private firstHit: boolean = false;
+
 
     constructor() {
     }
@@ -28,17 +31,34 @@ export class PareidoliaContext {
         this.drawingController.addEventListener(DrawingEnum.DRAWING_ENDED, () => { });
         this.drawingController.addEventListener(DrawingEnum.DRAWING_STARTED, () => {
             this.countDownTimer.reset();
+            if (this.firstHit == false) {
+
+                this.inUseCountDownTimer.reset();
+                this.firstHit = true;
+            }
+        });
+
+        this.inUseCountDownTimer = new CountDownTimer(60);
+        this.inUseCountDownTimer.addEventListener('countdownComplete', () => {
+            this.drawingController.clearCanvas();
+            this.imageMediator.loadNextImage();
         });
 
         this.imageMediator = new ImageMediator();
         this.imageMediator.initialize(imageDisplay);
+        this.imageMediator.addEventListener('imageLoaded', () => {
+            // this.countDownTimer.reset();
+            this.firstHit = false;
+        });
 
         this.setupKeyPressListeners();
     }
 
     public Update() {
         this.countDownTimer.update();
+        this.inUseCountDownTimer.update();
         this.drawingController.update();
+
     }
 
     private setupKeyPressListeners(): void {
